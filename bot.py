@@ -11,30 +11,29 @@ client = Bot(command_prefix=BOT_PREFIX)
 
 quoteslst = []
 
-def update(lst):
+def update():
     resp = get("http://talvieno.com/Taiya/uploaded.txt")
     quotes = resp.content.decode('utf-8').split('\n')[:-1]
-    ql = []
+    quoteslst = []
     for quote in quotes:
-        ql.append(quote[quote.find(": ") + 2:])
-    print("Quotes list updated. " + str(len(ql)) + " quotes found.")
-    return ql
+        quoteslst.append(quote[quote.find(": ") + 2:])
+    print("Quotes list updated. " + str(len(quoteslst)) + " quotes found.")
 
 @client.command(pass_context=True)
 async def get(context):
     quotedex = int(context.message.content.split('lt!get ')[1])
     if quotedex >= len(quoteslst):
         await client.say("Quote " + str(quotedex) + " does not exist.")
-        quoteslst = update(lst)
+        update()
         return
     await client.say("```" + quoteslst[quotedex] + " (" + str(quotedex) + ")```")
-    quoteslst = update(lst)
+    update()
 
 @client.command()
 async def getrandom():
     choice = random.randint(0, len(quoteslst) - 1)
     await client.say("```" + quoteslst[choice] + " (" + str(choice) + ")```")
-    quoteslst = update(lst)
+    update()
 
 @client.command(pass_context=True)
 async def search(context):
@@ -46,11 +45,11 @@ async def search(context):
                 searched.append(quote)
     if not searched:
         await client.say("No quotes found with keyword(s) '" + " ".join(words) + "'.")
-        quoteslst = update(lst)
+        update()
         return
     choice = random.choice(searched)
     await client.say("```" + choice + " (" + str(quoteslst.index(choice)) + ")```")
-    quoteslst = update(lst)
+    update()
 
 @client.event
 async def on_ready():
@@ -59,7 +58,7 @@ async def on_ready():
 
 async def list_servers():
     await client.wait_until_ready()
-    quoteslst = update(lst)
+    update()
     while not client.is_closed:
         print("Current servers:")
         for server in client.servers:
