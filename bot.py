@@ -45,6 +45,7 @@ async def search(context):
 async def refresh():
     resp = requests.get("http://talvieno.com/Taiya/uploaded.txt")
     quotes = resp.content.decode('utf-8').split('\n')[:-1]
+    global quoteslst
     quoteslst = []
     for quote in quotes:
         quoteslst.append(quote[quote.find(": ") + 2:])
