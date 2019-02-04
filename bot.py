@@ -28,7 +28,7 @@ async def getrandom():
 
 @client.command()
 async def getlast():
-	await client.say("```" + quoteslst[-1] + " (" + str(len(quoteslst) - 2) + ")```")
+	await client.say("```" + quoteslst[-1] + " (" + str(len(quoteslst) - 1) + ")```")
 
 @client.command(pass_context=True)
 async def search(context):
