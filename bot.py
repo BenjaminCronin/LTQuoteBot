@@ -28,7 +28,7 @@ async def getrandom():
 
 @client.command()
 async def getlast()
-	await client.say("```" + quoteslst[-1] + "```") #https://stackoverflow.com/questions/930397/getting-the-last-element-of-a-list-in-python
+	await client.say("```" + quoteslst[-1] + " (" + str(len(quoteslst - 2)) + ")```")
 
 @client.command(pass_context=True)
 async def search(context):
