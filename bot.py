@@ -6,6 +6,8 @@ from discord.ext.commands import Bot
 
 BOT_PREFIX = "lt!"
 TOKEN = open('token').read().strip("\n")
+UPDATECYCLE_M = 5
+DELAY = UPDATECYCLE_M * 60 #minutes * seconds / minute
 
 client = Bot(command_prefix=BOT_PREFIX)
 
@@ -15,6 +17,14 @@ quoteslst = []
 for quote in quotes:
     quoteslst.append(quote[quote.find(": ") + 2:])
 print("Quotes list updated. " + str(len(quoteslst)) + " quotes found.")
+
+async def autoupdater():
+	while 1==1:
+		await asyncio.sleep(DELAY)
+		refresh()
+
+#starts autoupdater
+asyncio.run(autoupdater())
 
 @client.command(pass_context=True)
 async def get(context):
