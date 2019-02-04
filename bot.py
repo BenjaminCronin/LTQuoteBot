@@ -1,39 +1,30 @@
 import asyncio
 import random
+import requests
 from discord import Game
 from discord.ext.commands import Bot
-from requests import get
 
 BOT_PREFIX = "lt!"
 TOKEN = open('token').read().strip("\n")
 
 client = Bot(command_prefix=BOT_PREFIX)
 
+resp = requests.get("http://talvieno.com/Taiya/uploaded.txt")
+quotes = resp.content.decode('utf-8').split('\n')[:-1]
 quoteslst = []
-
-def update():
-    resp = get("http://talvieno.com/Taiya/uploaded.txt")
-    quotes = resp.content.decode('utf-8').split('\n')[:-1]
-    quoteslst = []
-    for quote in quotes:
-        quoteslst.append(quote[quote.find(": ") + 2:])
-    print("Quotes list updated. " + str(len(quoteslst)) + " quotes found.")
+for quote in quotes:
+    quoteslst.append(quote[quote.find(": ") + 2:])
+print("Quotes list updated. " + str(len(quoteslst)) + " quotes found.")
 
 @client.command(pass_context=True)
 async def get(context):
     quotedex = int(context.message.content.split('lt!get ')[1])
-    if quotedex >= len(quoteslst):
-        await client.say("Quote " + str(quotedex) + " does not exist.")
-        update()
-        return
     await client.say("```" + quoteslst[quotedex] + " (" + str(quotedex) + ")```")
-    update()
-
+    
 @client.command()
 async def getrandom():
     choice = random.randint(0, len(quoteslst) - 1)
     await client.say("```" + quoteslst[choice] + " (" + str(choice) + ")```")
-    update()
 
 @client.command(pass_context=True)
 async def search(context):
@@ -43,13 +34,17 @@ async def search(context):
         for word in words:
             if word in quote:
                 searched.append(quote)
-    if not searched:
-        await client.say("No quotes found with keyword(s) '" + " ".join(words) + "'.")
-        update()
-        return
     choice = random.choice(searched)
     await client.say("```" + choice + " (" + str(quoteslst.index(choice)) + ")```")
-    update()
+
+@client.command()
+async def refresh():
+    resp = requests.get("http://talvieno.com/Taiya/uploaded.txt")
+    quotes = resp.content.decode('utf-8').split('\n')[:-1]
+    quoteslst = []
+    for quote in quotes:
+        quoteslst.append(quote[quote.find(": ") + 2:])
+    await client.say("Quotes list updated. " + str(len(quoteslst)) + " quotes found.")
 
 @client.event
 async def on_ready():
@@ -58,7 +53,6 @@ async def on_ready():
 
 async def list_servers():
     await client.wait_until_ready()
-    update()
     while not client.is_closed:
         print("Current servers:")
         for server in client.servers:
