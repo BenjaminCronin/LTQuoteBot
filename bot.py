@@ -26,6 +26,10 @@ async def getrandom():
     choice = random.randint(0, len(quoteslst) - 1)
     await client.say("```" + quoteslst[choice] + " (" + str(choice) + ")```")
 
+@client.command()
+async def getlast()
+	await client.say("```" + quoteslst[-1] + "```") #https://stackoverflow.com/questions/930397/getting-the-last-element-of-a-list-in-python
+
 @client.command(pass_context=True)
 async def search(context):
     words = context.message.content.split('lt!search ', 1)[1].split()
