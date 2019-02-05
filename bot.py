@@ -38,8 +38,11 @@ async def search(context):
         for word in words:
             if word in quote:
                 searched.append(quote)
-    choice = random.choice(searched)
-    await client.say("```" + choice + " (" + str(quoteslst.index(choice)) + ")```")
+	if len(searched) == 0:
+		await client.say("```No quotes with the string(s) \"" + context.message.content.split('lt!search ', 1)[1].split() + "\" found in the quote database```")
+	else:
+		choice = random.choice(searched)
+		await client.say("```" + choice + " (" + str(quoteslst.index(choice)) + ")```")
 
 @client.command()
 async def refresh():
