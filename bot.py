@@ -51,6 +51,13 @@ async def refresh():
         quoteslst.append(quote[quote.find(": ") + 2:])
     await client.say("Quotes list updated. " + str(len(quoteslst)) + " quotes found.")
 
+@client.command
+async def getprev():
+	numprev = int(context.message.content.split('lt!get ')[1])
+	for i in range(numprev, -1): #all the numbers from numprev to 0 will be given
+		await client.say("```" + quoteslst[len(quoteslst) - i]  + " (" + str(len(quoteslst) - i) + ")```")
+		
+
 @client.event
 async def on_ready():
     await client.change_presence(game=Game(name="with humans"))
